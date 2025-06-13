@@ -90,13 +90,16 @@ int mask_value_to_bin_str(int mask, char** out) {
 
 	memset(bin_mask, 0, sizeof(char) * BIN_STR_IP_SIZE);
 
-	int i = 0;
-	for (; i < mask + 2; ++i) {
-		bin_mask[i] = '1';
+	int i = 0, counter = 0;
+	for (; i < mask && counter < BIN_STR_IP_SIZE-1; ++counter) {
+		if (counter == 8 || counter == 17 || counter == 26)
+			continue;
+		bin_mask[counter] = '1';
+		++i;
 	}
 
-	for (; i < BIN_STR_IP_SIZE - 1; ++i) {
-		bin_mask[i] = '0';
+	for (; counter < BIN_STR_IP_SIZE - 1; ++counter) {
+		bin_mask[counter] = '0';
 	}
 
 	bin_mask[8] = '.';

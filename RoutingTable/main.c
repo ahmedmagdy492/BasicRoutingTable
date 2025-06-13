@@ -7,7 +7,7 @@ int main() {
 	init_mtrie(&routing_table);
 
 	char cidr1[] = "1.2.3.4/32";
-	char cidr2[] = "128.2.3.4/32";
+	char cidr2[] = "128.2.3.4/8";
 	char cidr3[] = "0.0.0.0/0";
 	int res_code = insert_mtrie_node(&routing_table, cidr1);
 	res_code = insert_mtrie_node(&routing_table, cidr2);
