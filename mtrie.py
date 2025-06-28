@@ -83,6 +83,28 @@ class Mtrie:
     def root(self):
         return self.__root
 
+    def is_route_exist(self, cidr: str):
+        if self.__root is None:
+            return False
+
+        search_node: Node = Node(cidr)
+        search_node_eff_prefix: str = search_node.calc_effprefix()
+        cur_node: Node = self.__root.child[search_node_eff_prefix[0]]
+        cur_node_eff_prefix: str = cur_node.calc_effprefix()
+        cur_offset = 0
+
+        while search_node_eff_prefix[cur_offset:cur_offset+cur_node.prefix_len] == cur_node_eff_prefix:
+            cur_offset += cur_node.prefix_len
+            if cur_offset == 32:
+                return True
+            cur_node = cur_node.child[search_node_eff_prefix[cur_offset]]
+            if cur_node is None:
+                break
+            cur_node_eff_prefix = cur_node.calc_effprefix()
+
+        return False
+
+
     @staticmethod
     def traverse(root: Node):
         if not root:
