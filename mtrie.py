@@ -104,6 +104,55 @@ class Mtrie:
 
         return False
 
+    def find_node_parent_by_cidr(self, cidr: str, root: Node | None) -> tuple[Node, Node] | None:
+        if not root:
+            return None
+
+        for child in root.child.values():
+            if not child:
+                continue
+            if child.data == cidr:
+                return (root, child)
+            ret_node = self.find_node_parent_by_cidr(cidr, child)
+            if ret_node != None:
+                return ret_node
+
+        return None
+        
+
+    def delete_route(self, cidr: str) -> bool:
+        search_res : tuple[Node, Node] | None = self.find_node_parent_by_cidr(cidr, self.__root)
+
+        if search_res is None:
+            return False
+
+        node_to_delete_parent, child_to_delete = search_res
+        search_effprefix: str = child_to_delete.calc_effprefix()
+
+        if node_to_delete_parent.child[search_effprefix[0]] is None:
+            return False
+
+        other_child_node: Node | None = None
+        node_to_delete_parent.child[search_effprefix[0]] = None
+
+        if '0' in node_to_delete_parent.child.keys() and node_to_delete_parent.child['0'] is not None:
+            other_child_node = node_to_delete_parent.child['0']
+        elif '1' in node_to_delete_parent.child.keys() and node_to_delete_parent.child['1'] is not None:
+            other_child_node = node_to_delete_parent.child['1']
+        else:
+            other_child_node = node_to_delete_parent.child['x']
+
+        if node_to_delete_parent == self.__root:
+            return True
+
+        node_to_delete_parent.prefix_len += other_child_node.prefix_len
+        node_to_delete_parent.prefix += other_child_node.prefix
+        node_to_delete_parent.wildcard += other_child_node.wildcard
+        node_to_delete_parent.data = other_child_node.data
+        node_to_delete_parent.child = other_child_node.child
+
+        return True
+
 
     @staticmethod
     def traverse(root: Node):

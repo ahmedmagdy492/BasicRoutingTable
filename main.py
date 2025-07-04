@@ -10,10 +10,22 @@ def main():
     routing_table.insert("1.0.0.0/8")
     # routing_table.insert("64.128.128.0/24")
 
-    # routing_table.traverse(routing_table.root())
+    routing_table.delete_route("1.2.3.4/32")
 
-    answer = routing_table.is_route_exist("128.128.0.2/32")
-    print("128.128.0.2/32", "->", answer)
+    routing_table.traverse(routing_table.root())
+    print("\n")
+
+    routing_table.delete_route("128.2.3.4/32")
+    routing_table.delete_route("0.0.0.0/0")
+    routing_table.delete_route("128.2.0.0/16")
+    routing_table.delete_route("128.128.0.0/16")
+    routing_table.delete_route("1.0.0.0/8")
+
+    routing_table.traverse(routing_table.root())
+    print("\n")
+
+    # answer = routing_table.is_route_exist("128.128.0.2/32")
+    # print("128.128.0.2/32", "->", answer)
 
 
 main()
