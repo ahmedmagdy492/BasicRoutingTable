@@ -1,4 +1,4 @@
-from mtrie import Mtrie
+from mtrie import Mtrie, Node
 
 def main():
     routing_table = Mtrie()
@@ -13,16 +13,26 @@ def main():
     routing_table.delete_route("1.2.3.4/32")
 
     routing_table.traverse(routing_table.root())
-    print("\n")
+    print("\n\n")
 
-    routing_table.delete_route("128.2.3.4/32")
-    routing_table.delete_route("0.0.0.0/0")
-    routing_table.delete_route("128.2.0.0/16")
-    routing_table.delete_route("128.128.0.0/16")
-    routing_table.delete_route("1.0.0.0/8")
+    route: Node | None = routing_table.route_lookup("128.2.3.5")
+    print(route)
 
-    routing_table.traverse(routing_table.root())
-    print("\n")
+    route: Node | None = routing_table.route_lookup("1.2.3.5")
+    print(route)
+
+    route: Node | None = routing_table.route_lookup("10.1.1.1")
+    print(route)
+
+    # Delete Test Cases
+    # routing_table.delete_route("128.2.3.4/32")
+    # routing_table.delete_route("0.0.0.0/0")
+    # routing_table.delete_route("128.2.0.0/16")
+    # routing_table.delete_route("128.128.0.0/16")
+    # routing_table.delete_route("1.0.0.0/8")
+
+    # routing_table.traverse(routing_table.root())
+    # print("\n")
 
     # answer = routing_table.is_route_exist("128.128.0.2/32")
     # print("128.128.0.2/32", "->", answer)

@@ -1,7 +1,7 @@
 
 class NetUtils:
     @staticmethod
-    def ipstr_decimal_to_binstr(ipstr):
+    def ipstr_decimal_to_binstr(ipstr) -> str:
         parts = ipstr.split('.')
         bin_str = ""
 
@@ -20,3 +20,13 @@ class NetUtils:
         bin_str = mask_value * '0'
         bin_str += no_of_zeros * '1'
         return bin_str
+
+    # the 2 strings should be of the same length
+    @staticmethod
+    def equal_with_dontcare(str1: str, str2: str):
+        for i in range(len(str1)):
+            if str1[i] != str2[i] and not (
+                    (str1[i] == 'x' and str2[i] != 'x') or (str2[i] == 'x' and str1[i] != 'x')):
+                return False
+
+        return True

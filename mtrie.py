@@ -1,3 +1,4 @@
+import net_utils
 from net_utils import NetUtils
 
 
@@ -152,6 +153,44 @@ class Mtrie:
         node_to_delete_parent.child = other_child_node.child
 
         return True
+
+    def route_lookup(self, ip: str) -> Node | None:
+        input_bin = net_utils.NetUtils.ipstr_decimal_to_binstr(ip)
+        stack: list[tuple[Node, int]] = []
+        no_bits_scanned = 0
+        cur: Node | None = self.__root
+
+        if 'x' in cur.child.keys() and cur.child['x'] is not None:
+            stack.append((cur.child['x'], no_bits_scanned))
+
+        if input_bin[0] not in cur.child.keys():
+            if len(stack) == 0:
+                return None
+            popped_value = stack.pop()
+            return popped_value[0]
+
+        cur = cur.child[input_bin[0]]
+
+        while cur:
+            if net_utils.NetUtils.equal_with_dontcare(cur.calc_effprefix(),
+                                                      input_bin[no_bits_scanned:no_bits_scanned+(32 if cur.prefix_len == 0 else cur.prefix_len)]) == False:
+                if len(stack) == 0:
+                    break
+                popped_value = stack.pop()
+                cur = popped_value[0]
+                no_bits_scanned = popped_value[1]
+                continue
+            no_bits_scanned += 32 if cur.prefix_len == 0 else cur.prefix_len
+            if no_bits_scanned == 32:
+                return cur
+            if 'x' in cur.child.keys() and cur.child['x'] is not None:
+                stack.append((cur.child['x'], no_bits_scanned))
+            if input_bin[no_bits_scanned] not in cur.child.keys():
+                break
+            cur = cur.child[input_bin[no_bits_scanned]]
+
+
+        return None
 
 
     @staticmethod
